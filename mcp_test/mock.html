@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python File Communication Flow</title>
+    <!-- Visualization & Content Choices:
+        - All components and connections: Report Info -> Specific Python files and their HTTP interactions. Goal -> Organize & Explain a Process. Viz/Method -> Structured HTML/CSS divs styled as distinct nodes (representing Python files) and directional arrows (representing HTTP requests). Interaction -> None (static). Justification -> This method provides a direct, easy-to-follow visual map of the code's communication pathways, which is crucial for debugging and understanding the system's architecture at a glance. HTML/CSS with Tailwind is used to build this diagram without relying on SVG or Mermaid JS, adhering strictly to the constraints. Color coding from the "Brilliant Blues" palette enhances clarity and visual appeal.
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #EAF6FF; /* Light Blue Background */
+            color: #0A2463; /* Dark Blue Primary Text */
+        }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .node-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #E0E7FF;
+            width: 100%;
+            max-width: 300px;
+        }
+        .node-card.highlight {
+            border: 2px solid #3E92CC; /* Vibrant blue for key components */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .node-title {
+            font-weight: 700;
+            font-size: 1.25rem; /* text-xl */
+            color: #D8315B; /* Reddish Pink for titles */
+            margin-bottom: 8px;
+        }
+        .node-description {
+            font-size: 0.9rem; /* text-sm */
+            color: #0A2463]/70;
+            line-height: 1.4;
+        }
+        .flow-arrow {
+            text-align: center;
+            font-size: 2.5rem; /* text-4xl */
+            color: #3E92CC; /* Vibrant blue for arrows */
+            font-weight: 800;
+            line-height: 1;
+            margin: 16px 0;
+            z-index: 5;
+        }
+        .flow-label {
+            font-size: 0.8rem;
+            color: #0A2463]/60;
+            margin-top: 4px;
+        }
+
+        /* Layout for groups of nodes */
+        .group-horizontal {
+            display: flex;
+            flex-direction: column; /* Default to column for small screens */
+            align-items: center;
+            width: 100%;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) {
+            .group-horizontal {
+                flex-direction: row;
+                justify-content: center;
+                gap: 48px;
+            }
+            .group-horizontal .node-card {
+                flex: 1;
+                max-width: 300px;
+            }
+            .group-horizontal .flow-arrow {
+                transform: rotate(0deg);
+                margin: 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-[#0A2463] mb-4">Python File Communication Flow</h1>
+                <p class="max-w-3xl mx-auto text-lg md:text-xl text-[#0A2463]/80">
+                    This figure illustrates the direct HTTP communication between the Python scripts in our MCP integration example.
+                </p>
+            </div>
+
+            <div class="flow-container">
+
+                <div class="node-card">
+                    <div class="node-title">Client Application (User)</div>
+                    <div class="node-description">Initiates interaction and login.</div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+                <div class="flow-label">(User Input/Login Request)</div>
+                <div class="flow-arrow">↓</div>
+
+                <div class="node-card highlight">
+                    <div class="node-title">ollama_mcp_client.py</div>
+                    <div class="node-description">(Ollama LLM Client Simulation)</div>
+                    <div class="node-description">Simulates LLM decision-making and tool calls.</div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <div class="group-horizontal">
+                    <div class="flex flex-col items-center">
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-label">(HTTP POST /auth/login)</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="node-card">
+                            <div class="node-title">auth_api_mock.py</div>
+                            <div class="node-description">(Authentication Service Mock)</div>
+                            <div class="node-description">Handles user login and token issuance.</div>
+                        </div>
+                        <div class="flow-arrow">←</div>
+                        <div class="flow-label">(Login Token)</div>
+                        <div class="flow-arrow">←</div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-label">(HTTP POST /mcp/invoke)</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="node-card highlight">
+                            <div class="node-title">mcp_server.py</div>
+                            <div class="node-description">(Your MCP Server)</div>
+                            <div class="node-description">Mediates LLM requests to banking APIs.</div>
+                        </div>
+                        <div class="flow-arrow">←</div>
+                        <div class="flow-label">(MCP Response)</div>
+                        <div class="flow-arrow">←</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+                <div class="flow-label">(Internal API Calls by MCP Server)</div>
+                <div class="flow-arrow">↓</div>
+
+                <div class="group-horizontal">
+                    <div class="flex flex-col items-center">
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-label">(HTTP POST /auth/validate_token)</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="node-card">
+                            <div class="node-title">auth_api_mock.py</div>
+                            <div class="node-description">(Authentication Service Mock)</div>
+                            <div class="node-description">Validates tokens for MCP Server.</div>
+                        </div>
+                        <div class="flow-arrow">←</div>
+                        <div class="flow-label">(User ID / Validation Status)</div>
+                        <div class="flow-arrow">←</div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-label">(HTTP GET /banking/...)</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="node-card">
+                            <div class="node-title">banking_api_mock.py</div>
+                            <div class="node-description">(Banking Service Mock)</div>
+                            <div class="node-description">Provides banking functionalities.</div>
+                        </div>
+                        <div class="flow-arrow">←</div>
+                        <div class="flow-label">(Banking Data)</div>
+                        <div class="flow-arrow">←</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+                <div class="flow-label">(Final Response to User)</div>
+                <div class="flow-arrow">↓</div>
+
+                <div class="node-card">
+                    <div class="node-title">Client Application (User)</div>
+                    <div class="node-description">Receives and displays LLM's contextual response.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
